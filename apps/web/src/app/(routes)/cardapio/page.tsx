@@ -9,7 +9,7 @@ async function getPasteis(): Promise<Pastel[]> {
   } catch { return []; }
 }
 
-export default async function CardapioPage(): Promise<JSX.Element> {
+export default async function CardapioPage() {
   const pasteis = await getPasteis();
   const salgados = pasteis.filter((p) => p.tipo === "SALGADO");
   const doces = pasteis.filter((p) => p.tipo === "DOCE");

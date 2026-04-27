@@ -40,7 +40,7 @@ const infoCards: { Icon: IconType; title: string; desc: string }[] = [
   { Icon: LuUtensils,   title: "Peça na hora",desc: "Frito na sua frente" },
 ];
 
-export default async function HomePage(): Promise<JSX.Element> {
+export default async function HomePage() {
   const [pasteis, topPasteis] = await Promise.all([getPasteis(), getTopPasteis()]);
 
   const salgados = pasteis.filter((p) => p.tipo === "SALGADO");

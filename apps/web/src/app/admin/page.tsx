@@ -57,7 +57,7 @@ function diasAte(data: string): number {
   return Math.round((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export default async function AdminDashboard(): Promise<JSX.Element> {
+export default async function AdminDashboard() {
   const [stats, counts, todosOsFiados] = await Promise.all([getStats(), getCounts(), getFiados()]);
 
   const margemMes = stats && stats.mes.faturamento > 0
