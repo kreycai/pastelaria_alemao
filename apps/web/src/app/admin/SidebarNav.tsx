@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LuLayoutDashboard, LuReceipt, LuNotebook, LuChefHat,
-  LuPackage, LuShoppingCart, LuMonitor,
+  LuPackage, LuShoppingCart, LuMonitor, LuSmartphone,
 } from "react-icons/lu";
 import type { IconType } from "react-icons";
 
@@ -18,7 +18,8 @@ const navItems: { href: string; label: string; icon: IconType; exact: boolean }[
 ];
 
 const externalItems: { href: string; label: string; icon: IconType }[] = [
-  { href: "/cozinha", label: "Tela da Cozinha", icon: LuMonitor },
+  { href: "/cozinha",       label: "Tela da Cozinha", icon: LuMonitor     },
+  { href: "/admin/mobile",  label: "App Mobile",      icon: LuSmartphone  },
 ];
 
 export default function SidebarNav() {

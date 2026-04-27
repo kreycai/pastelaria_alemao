@@ -1,7 +1,4 @@
-// ⚠️  Mude para o IP da sua rede local ao testar em dispositivo físico.
-//     No emulador Android: http://10.0.2.2:3001
-//     No simulador iOS / emulador Android com Expo Go: use o IP da sua máquina.
-export const API_URL = "http://192.168.15.60:3001";
+export const API_URL = "https://pastelaria-alemao.onrender.com";
 
 export async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
