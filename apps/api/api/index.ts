@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from "http";
+import path from "path";
 
-// Importa o bundle webpack (compilado com emitDecoratorMetadata via ts-loader)
-// O esbuild do @vercel/node não suporta decoradores NestJS — por isso usamos o bundle
+// require dinâmico impede o esbuild de tentar embutir o bundle do webpack
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { server, ready } = require("../dist/main") as {
+const { server, ready } = require(path.resolve(__dirname, "../dist/main")) as {
   server: (req: IncomingMessage, res: ServerResponse) => void;
   ready: Promise<void>;
 };
