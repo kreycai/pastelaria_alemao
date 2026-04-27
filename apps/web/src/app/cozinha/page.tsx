@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { useEffect, useState } from "react";
 import { API_URL } from "@/lib/api";
 import { LuClock, LuChefHat, LuCircleCheck, LuFileText } from "react-icons/lu";
 import type { IconType } from "react-icons";
@@ -101,47 +100,26 @@ function PedidoCard({ p, now }: { p: Pedido; now: number }) {
 
 export default function CozinhaPage() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  const [connected, setConnected] = useState(false);
+  const [erro, setErro] = useState(false);
   const [now, setNow] = useState(Date.now());
-  const socketRef = useRef<Socket | null>(null);
-
-  // tick every 10s to refresh elapsed times
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 10_000);
-    return () => clearInterval(t);
-  }, []);
 
   useEffect(() => {
-    // load active orders on mount
-    fetch(`${API_URL}/pedidos`)
-      .then((r) => r.json())
-      .then((data: Pedido[]) =>
-        setPedidos(data.filter((p) => ["PENDENTE", "EM_PREPARO", "PRONTO"].includes(p.status)))
-      )
-      .catch(() => {});
+    async function buscar() {
+      try {
+        const res = await fetch(`${API_URL}/pedidos`);
+        if (!res.ok) throw new Error();
+        const data: Pedido[] = await res.json();
+        setPedidos(data.filter((p) => ["PENDENTE", "EM_PREPARO", "PRONTO"].includes(p.status)));
+        setErro(false);
+      } catch {
+        setErro(true);
+      }
+      setNow(Date.now());
+    }
 
-    const socket: Socket = io(API_URL, { transports: ["websocket", "polling"] });
-    socketRef.current = socket;
-
-    socket.on("connect", () => setConnected(true));
-    socket.on("disconnect", () => setConnected(false));
-
-    socket.on("novo-pedido", (pedido: Pedido) => {
-      setPedidos((prev) => [pedido, ...prev.filter((p) => p.id !== pedido.id)]);
-    });
-
-    socket.on("status-atualizado", (pedido: Pedido) => {
-      setPedidos((prev) => {
-        if (["ENTREGUE", "CANCELADO"].includes(pedido.status)) {
-          return prev.filter((p) => p.id !== pedido.id);
-        }
-        const exists = prev.find((p) => p.id === pedido.id);
-        if (exists) return prev.map((p) => p.id === pedido.id ? pedido : p);
-        return [pedido, ...prev];
-      });
-    });
-
-    return () => { socket.disconnect(); };
+    buscar();
+    const interval = setInterval(buscar, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const cols = STATUS_COLS.map((col) => ({
@@ -174,13 +152,13 @@ export default function CozinhaPage() {
         </div>
         <div style={{
           display: "flex", alignItems: "center", gap: "0.5rem",
-          fontSize: "0.75rem", color: connected ? "#22c55e" : "#ef4444",
+          fontSize: "0.75rem", color: erro ? "#ef4444" : "#22c55e",
         }}>
           <div style={{
             width: 8, height: 8, borderRadius: "50%",
-            backgroundColor: connected ? "#22c55e" : "#ef4444",
+            backgroundColor: erro ? "#ef4444" : "#22c55e",
           }} />
-          {connected ? "Ao vivo" : "Reconectando…"}
+          {erro ? "Sem conexão" : "Ao vivo"}
         </div>
       </div>
 

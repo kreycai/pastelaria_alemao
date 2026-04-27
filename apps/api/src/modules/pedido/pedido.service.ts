@@ -2,13 +2,11 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { prisma } from "@pastelaria/db";
 import { StatusPedido } from "@pastelaria/db";
 import { CreatePedidoDto } from "./dto/create-pedido.dto";
-import { OrdersGateway } from "./orders.gateway";
 import { NotificationsService } from "../notifications/notifications.service";
 
 @Injectable()
 export class PedidoService {
   constructor(
-    private readonly ordersGateway: OrdersGateway,
     private readonly notificationsService: NotificationsService,
   ) {}
   async findAll() {
@@ -66,8 +64,6 @@ export class PedidoService {
       },
       include: { itens: { include: { pastel: true } } },
     });
-
-    this.ordersGateway.emitNovoPedido(pedido);
 
     // Coleta IDs de matérias-primas afetadas pelo pedido
     const materiasAfetadas = new Map<string, number>();
@@ -127,7 +123,6 @@ export class PedidoService {
       where: { id }, data: { status },
       include: { itens: { include: { pastel: true } } },
     });
-    this.ordersGateway.emitStatusAtualizado(pedido);
     return pedido;
   }
 

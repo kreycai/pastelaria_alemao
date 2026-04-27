@@ -35,7 +35,7 @@ export class NotificationsService {
           Accept: "application/json",
         },
         body: JSON.stringify(messages),
-      });
+      }) as unknown as { ok: boolean; status: number };
       if (!res.ok) {
         this.logger.warn(`Expo Push retornou ${res.status}`);
       }
