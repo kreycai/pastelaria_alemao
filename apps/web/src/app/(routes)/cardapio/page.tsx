@@ -1,3 +1,4 @@
+import type React from "react";
 import type { Pastel } from "@pastelaria/types";
 import { API_URL } from "@/lib/api";
 
@@ -9,7 +10,7 @@ async function getPasteis(): Promise<Pastel[]> {
   } catch { return []; }
 }
 
-export default async function CardapioPage() {
+export default async function CardapioPage(): Promise<React.ReactElement> {
   const pasteis = await getPasteis();
   const salgados = pasteis.filter((p) => p.tipo === "SALGADO");
   const doces = pasteis.filter((p) => p.tipo === "DOCE");

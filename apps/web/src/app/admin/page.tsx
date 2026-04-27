@@ -1,3 +1,4 @@
+import type React from "react";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
 import {
@@ -57,7 +58,7 @@ function diasAte(data: string): number {
   return Math.round((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard(): Promise<React.ReactElement> {
   const [stats, counts, todosOsFiados] = await Promise.all([getStats(), getCounts(), getFiados()]);
 
   const margemMes = stats && stats.mes.faturamento > 0

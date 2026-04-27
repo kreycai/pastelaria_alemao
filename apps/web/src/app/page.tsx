@@ -1,3 +1,4 @@
+import type React from "react";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
 import {
@@ -40,7 +41,7 @@ const infoCards: { Icon: IconType; title: string; desc: string }[] = [
   { Icon: LuUtensils,   title: "Peça na hora",desc: "Frito na sua frente" },
 ];
 
-export default async function HomePage() {
+export default async function HomePage(): Promise<React.ReactElement> {
   const [pasteis, topPasteis] = await Promise.all([getPasteis(), getTopPasteis()]);
 
   const salgados = pasteis.filter((p) => p.tipo === "SALGADO");
