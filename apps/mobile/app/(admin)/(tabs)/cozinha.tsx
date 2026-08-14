@@ -4,7 +4,7 @@ import {
   ActivityIndicator, RefreshControl,
 } from "react-native";
 import { useFocusEffect } from "expo-router";
-import { apiFetch, Pedido } from "@/lib/api";
+import { apiFetch, Pedido, quemPediu } from "@/lib/api";
 
 type ColStatus = "PENDENTE" | "EM_PREPARO" | "PRONTO";
 
@@ -166,9 +166,9 @@ export default function CozinhaScreen() {
                           </Text>
                         </View>
 
-                        {/* Nome do cliente (fiado) */}
-                        {p.nomeCliente ? (
-                          <Text style={s.cardCliente}>{p.nomeCliente}</Text>
+                        {/* Quem pediu: nome avulso ou o do cliente cadastrado */}
+                        {quemPediu(p) ? (
+                          <Text style={s.cardCliente}>{quemPediu(p)}</Text>
                         ) : null}
 
                         {/* Itens do pedido */}

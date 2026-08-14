@@ -9,13 +9,19 @@ interface Fiado {
   id: string;
   total: number;
   clienteId: string | null;
+  // Fiado anotado no balcão guarda o nome solto; fiado de cliente cadastrado
+  // guarda a relação. Numa tela de cobrança, ficar sem nome é inaceitável.
   nomeCliente: string | null;
+  cliente: { id: string; nome: string } | null;
   previsaoPagamento: string | null;
   fiadoPago: boolean;
   fiadoPagoEm: string | null;
   createdAt: string;
   itens: ItemPedido[];
 }
+
+/** De quem é a dívida. */
+const devedor = (f: Fiado): string => f.nomeCliente ?? f.cliente?.nome ?? "—";
 
 interface GrupoCliente {
   chave: string;
@@ -117,7 +123,7 @@ export default function FiadosPage() {
     const map = new Map<string, GrupoCliente>();
     pendentes.forEach((f) => {
       const chave = f.clienteId ?? f.nomeCliente ?? "—";
-      const nome = f.nomeCliente ?? "—";
+      const nome = devedor(f);
       const g = map.get(chave) ?? { chave, nome, total: 0, count: 0, vencidos: 0 };
       g.total += Number(f.total);
       g.count += 1;
@@ -255,7 +261,7 @@ export default function FiadosPage() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span className="text-base font-bold" style={{ color: fiado.fiadoPago ? "#71717a" : "#f4f4f5" }}>
-                        {fiado.nomeCliente ?? "—"}
+                        {devedor(fiado)}
                       </span>
                       {fiado.fiadoPago ? (
                         <span className="rounded-full px-2 py-0.5 text-xs font-semibold" style={{ backgroundColor: "rgba(34,197,94,0.1)", color: "#22c55e" }}>
@@ -316,7 +322,9 @@ export default function FiadosPage() {
                       <button
                         onClick={() => {
                           setEditandoPrevisao(fiado.id);
-                          setNovaPrevisao(fiado.previsaoPagamento ? fiado.previsaoPagamento.split("T")[0] : "");
+                          // split sempre devolve ao menos um elemento, mas sob
+                          // noUncheckedIndexedAccess o tipo é string | undefined.
+                          setNovaPrevisao(fiado.previsaoPagamento?.split("T")[0] ?? "");
                         }}
                         className="flex items-center gap-1.5 text-xs"
                         style={{ color: fiado.previsaoPagamento ? "#71717a" : "#52525b" }}>

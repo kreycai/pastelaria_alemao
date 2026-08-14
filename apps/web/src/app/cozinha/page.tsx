@@ -16,9 +16,17 @@ interface Pedido {
   status: "PENDENTE" | "EM_PREPARO" | "PRONTO" | "ENTREGUE" | "CANCELADO";
   total: number;
   observacao: string | null;
+  // Pedido avulso guarda o nome solto em `nomeCliente` ("Balcão", "Mesa 4");
+  // pedido de cliente cadastrado guarda a relação. A cozinha precisa dos dois.
   nomeCliente: string | null;
+  cliente: { nome: string } | null;
   createdAt: string;
   itens: ItemPedido[];
+}
+
+/** Nome a chamar quando o pedido ficar pronto. */
+function quemPediu(p: Pedido): string | null {
+  return p.nomeCliente ?? p.cliente?.nome ?? null;
 }
 
 const STATUS_COLS: { key: Pedido["status"]; label: string; Icon: IconType; color: string; bg: string }[] = [
@@ -47,9 +55,9 @@ function PedidoCard({ p, now }: { p: Pedido; now: number }) {
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
-          {p.nomeCliente && (
+          {quemPediu(p) && (
             <div style={{ fontSize: "1rem", fontWeight: 800, color: "#f4f4f5", marginBottom: "0.25rem" }}>
-              {p.nomeCliente}
+              {quemPediu(p)}
             </div>
           )}
           <div style={{ fontSize: "0.75rem", color: "#52525b", fontFamily: "monospace" }}>

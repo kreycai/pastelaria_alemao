@@ -2,8 +2,12 @@
 
 import { LuSmartphone, LuDownload, LuRefreshCw } from "react-icons/lu";
 
-const APK_URL = "/app.apk";
+// O APK não é versionado no repositório: binário de 60+ MB em git incha o clone
+// para sempre, mesmo depois de apagado. Publique-o como asset de release e
+// aponte a URL aqui (ou por NEXT_PUBLIC_APK_URL). Vazio = botão desabilitado.
+const APK_URL: string = process.env.NEXT_PUBLIC_APK_URL ?? "";
 const APK_VERSION = "1.0.0";
+const apkDisponivel = APK_URL !== "";
 
 export default function MobilePage() {
   return (
@@ -40,19 +44,19 @@ export default function MobilePage() {
           Habilite "Fontes desconhecidas" nas configurações caso necessário.
         </p>
         <a
-          href={APK_URL}
+          href={apkDisponivel ? APK_URL : undefined}
           download
           style={{
             display: "inline-flex", alignItems: "center", gap: "0.5rem",
             backgroundColor: "#dc2626", color: "white",
             borderRadius: "0.5rem", padding: "0.625rem 1.25rem",
             fontSize: "0.875rem", fontWeight: 600, textDecoration: "none",
-            opacity: APK_URL === "#" ? 0.5 : 1,
-            pointerEvents: APK_URL === "#" ? "none" : "auto",
+            opacity: apkDisponivel ? 1 : 0.5,
+            pointerEvents: apkDisponivel ? "auto" : "none",
           }}
         >
           <LuDownload size={16} />
-          Baixar APK
+          {apkDisponivel ? "Baixar APK" : "APK não publicado"}
         </a>
       </div>
 

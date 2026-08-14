@@ -4,7 +4,7 @@ import {
   RefreshControl, ActivityIndicator, Alert,
 } from "react-native";
 import { useFocusEffect } from "expo-router";
-import { apiFetch, Pedido } from "@/lib/api";
+import { apiFetch, Pedido, quemPediu } from "@/lib/api";
 import { clearAdminSession } from "@/lib/store";
 import { router } from "expo-router";
 
@@ -98,7 +98,7 @@ export default function PedidosScreen() {
                     </View>
                     {isFiado && <View style={s.fiadoBadge}><Text style={s.fiadoBadgeText}>📒 Fiado</Text></View>}
                   </View>
-                  {p.nomeCliente && <Text style={s.nomeCliente}>{p.nomeCliente}</Text>}
+                  {quemPediu(p) && <Text style={s.nomeCliente}>{quemPediu(p)}</Text>}
                   <Text style={s.horario}>{new Date(p.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</Text>
                 </View>
                 <Text style={s.total}>R$ {Number(p.total).toFixed(2)}</Text>

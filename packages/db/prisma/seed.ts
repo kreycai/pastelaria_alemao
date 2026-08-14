@@ -79,6 +79,10 @@ const MATERIAS = [
   { nome: "Coco ralado", unidade: UnidadeMateriaPrima.KG, precoKg: 39.00, estoque: 620, minimo: 700 },       // crítico
   { nome: "Açúcar com canela", unidade: UnidadeMateriaPrima.KG, precoKg: 9.80, estoque: 2_800, minimo: 1_000 },
   { nome: "Óleo de fritura", unidade: UnidadeMateriaPrima.KG, precoKg: 11.50, estoque: 24_000, minimo: 8_000 },
+  // Sazonal: fica acima do mínimo de propósito, pra não entrar na lista de
+  // compras de agosto — ninguém repõe bacalhau fora da temporada.
+  { nome: "Bacalhau dessalgado", unidade: UnidadeMateriaPrima.KG, precoKg: 119.90, estoque: 600, minimo: 500 },
+  { nome: "Batata", unidade: UnidadeMateriaPrima.KG, precoKg: 5.90, estoque: 7_400, minimo: 3_000 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -173,9 +177,12 @@ const PASTEIS: {
     receita: [["Massa de pastel (folha)", 45], ["Chocolate ao leite", 35], ["Coco ralado", 25], ["Óleo de fritura", 15]],
   },
   {
+    // Fora do cardápio e com o insumo zerado: é assim que um item sazonal fica
+    // no sistema entre as temporadas — cadastrado, com receita, indisponível.
     nome: "Pastel de Bacalhau", preco: 21.00, tipo: TipoPastel.SALGADO, disponivel: false,
     descricao: "Sazonal — volta na Semana Santa.",
-    receita: [["Massa de pastel (folha)", 45], ["Óleo de fritura", 15]],
+    receita: [["Massa de pastel (folha)", 45], ["Bacalhau dessalgado", 45],
+              ["Batata", 30], ["Azeitona picada", 8], ["Óleo de fritura", 15]],
   },
 ];
 

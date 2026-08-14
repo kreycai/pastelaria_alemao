@@ -44,10 +44,18 @@ export interface Pedido {
   total: number;
   observacao: string | null;
   metodoPagamento: "DINHEIRO" | "PIX" | "CARTAO_DEBITO" | "CARTAO_CREDITO" | "FIADO";
+  // Pedido avulso guarda o nome solto em `nomeCliente` ("Balcão", "Mesa 4");
+  // pedido de cliente cadastrado guarda a relação. Use `quemPediu` para os dois.
   nomeCliente: string | null;
+  cliente: { nome: string } | null;
   fiadoPago: boolean;
   fiadoPagoEm: string | null;
   previsaoPagamento: string | null;
   createdAt: string;
   itens: ItemPedido[];
+}
+
+/** Nome a chamar quando o pedido ficar pronto: o avulso ou o do cadastro. */
+export function quemPediu(p: Pedido): string | null {
+  return p.nomeCliente ?? p.cliente?.nome ?? null;
 }
