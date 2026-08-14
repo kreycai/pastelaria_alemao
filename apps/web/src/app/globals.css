@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2e2e34; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+body {
+  background-color: #09090b;
+  color: #f4f4f5;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+input, select, textarea {
+  background-color: #1a1a1e;
+  border: 1px solid #2a2a30;
+  color: #f4f4f5;
+  border-radius: 0.5rem;
+  padding: 0.5625rem 0.75rem;
+  width: 100%;
+  outline: none;
+  font-size: 0.875rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+input::placeholder, textarea::placeholder {
+  color: #3f3f46;
+}
+
+select option {
+  background-color: #1a1a1e;
+}
+
+.nav-link {
+  color: #71717a;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #f4f4f5;
+}
+
+.admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #52525b;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  border: 1px solid transparent;
+}
+
+.admin-sidebar-link:hover {
+  background-color: #16161a;
+  color: #a1a1aa;
+}
+
+.admin-sidebar-link[data-active] {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: #f4f4f5;
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+.admin-sidebar-link[data-active] .sidebar-icon {
+  opacity: 1;
+}
