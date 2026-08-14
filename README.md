@@ -5,22 +5,77 @@ app do balcão. Monorepo TypeScript com **três aplicações** sobre uma única 
 banco.
 
 O que separa isso de um CRUD de pedidos: **o sistema conhece a receita de cada pastel**. Cada
-pastel é uma lista de matérias-primas com a quantidade em gramas, e o preço de cada
-matéria-prima é por quilo. Disso saem duas coisas que um CRUD não dá:
+pastel é uma lista de matérias-primas com quantidade em gramas, e cada matéria-prima tem preço
+por quilo. Dessa única ligação saem quatro coisas que um sistema de pedidos não dá:
 
-- **o estoque baixa sozinho** a cada pedido, na proporção da receita;
-- **o lucro é real**, não estimado — o custo de cada pedido é calculado somando
-  `preço/kg × gramas × quantidade` de cada ingrediente.
+- **custo e margem de cada pastel**, calculados — não chutados;
+- **lucro real do dia e do mês**, porque o custo de cada pedido vem da receita;
+- **lista de compras** com quanto comprar de cada item que furou o mínimo, **e quanto isso vai
+  custar** antes de você sair de casa;
+- **o estoque baixa sozinho** a cada pedido, na proporção da receita.
 
-<!-- Descomente quando as imagens estiverem em docs/img/
-| Painel do dono | Cozinha |
-|---|---|
-| ![Painel](docs/img/admin.png) | ![Cozinha](docs/img/cozinha.png) |
+---
 
-| App do balcão | Cardápio público |
-|---|---|
-| ![Mobile](docs/img/mobile.png) | ![Cardápio](docs/img/cardapio.png) |
--->
+## O custo nasce no cadastro, não num relatório
+
+<p align="center"><img src="docs/img/receita-custo.jpg" alt="Montagem da receita com análise de custo" width="880"></p>
+
+Você monta o pastel marcando ingredientes e digitando os gramas. O preço por quilo aparece ao
+lado de cada um, o custo daquela linha aparece na hora, e a **análise de custo** embaixo do
+preço de venda mostra custo, preço e margem enquanto você digita.
+
+É a diferença entre "acho que dá lucro" e **saber que o Frango com Catupiry custa R$ 4,29,
+vende a R$ 12,00 e deixa 64%**. Quem define preço numa pastelaria decide isso de cabeça; aqui
+a conta está na tela.
+
+<p align="center"><img src="docs/img/pasteis.jpg" alt="Listagem com custo e margem de cada pastel" width="880"></p>
+
+E na listagem cada pastel carrega venda, custo, margem e quantos ingredientes tem. Dá pra ver
+de relance que o camarão deixa 57% e a banana com canela deixa 87% — o tipo de comparação que
+muda decisão de cardápio.
+
+## O painel responde a pergunta que o dono faz
+
+<p align="center"><img src="docs/img/dashboard.jpg" alt="Dashboard com faturamento, custo e lucro" width="880"></p>
+
+Faturamento, **custo de ingredientes** e **lucro bruto** — do dia e do mês, com a margem. Mais
+faturamento por período (com data de/até), os pastéis mais vendidos, o estoque em alerta e os
+fiados vencidos, tudo na primeira tela.
+
+## Lista de compras, não lista de estoque
+
+<p align="center"><img src="docs/img/lista-compras.jpg" alt="Lista de compras com estimativa de custo" width="880"></p>
+
+A tela não pergunta "quanto tem no estoque". Ela responde **"o que eu preciso comprar, quanto,
+e quanto vai custar"** — com checkbox pra ir marcando.
+
+A quantidade sugerida é `(mínimo − atual) + 500 g` de folga, de propósito: comprar exatamente
+o que falta te devolve ao mínimo, e no dia seguinte o item está crítico de novo. A estimativa
+soma `quantidade × preço/kg` item por item.
+
+> **No celular isso vale mais que no desktop.** Quem vai ao mercado leva a lista no bolso e vai
+> dando baixa conforme coloca no carrinho — é o caso de uso que justifica o app existir, e não
+> só ser um site responsivo.
+
+## A cozinha, ao vivo
+
+<p align="center"><img src="docs/img/cozinha.jpg" alt="Tela da cozinha" width="880"></p>
+
+Três colunas por status, atualizando a cada 5 segundos. O card fica **vermelho ao passar de 10
+minutos** — na imagem acima dá pra ver o de 10min já em alerta e o de 8min ainda normal.
+
+Cada card traz quem pediu, os itens com quantidade e a observação ("cortar ao meio", "sem
+cebola"), porque é isso que a pessoa na chapa precisa ler de longe.
+
+## Caixa e cardápio
+
+<p align="center">
+  <img src="docs/img/caixa.jpg" alt="Caixa e pedidos" width="530">
+  <img src="docs/img/cardapio.jpg" alt="Cardápio público" width="300">
+</p>
+
+No caixa, o pedido é montado e avança de status por botão. O cardápio é a parte pública, sem
+login — a mesma API que alimenta o resto.
 
 ---
 
@@ -78,6 +133,12 @@ em ponto flutuante acumula erro, e num sistema que fecha caixa isso aparece.
 tela do dono pra cobrar e uma tela do cliente pra ver o que ele deve. É a forma como pastelaria
 de bairro funciona de verdade.
 
+<p align="center"><img src="docs/img/fiados.jpg" alt="Controle de fiados" width="880"></p>
+
+A tela agrupa por devedor, marca **vencido** e **vence em N dias**, e recebe com um clique. O
+total a receber e a contagem de vencidos ficam no topo — e também no painel principal, porque
+fiado esquecido é prejuízo silencioso.
+
 ### Duas conexões de banco, de propósito
 
 `DATABASE_URL` aponta pro pooler (PgBouncer) e é o que a aplicação usa em runtime;
@@ -89,6 +150,21 @@ pooler**. É uma pegadinha que só aparece quando o deploy quebra.
 `/admin` mostra pedidos, faturamento, custo e lucro do dia e do mês, os cinco pasteis mais
 vendidos, a distribuição de pedidos por status e a lista de ingredientes em estoque crítico.
 O custo vem da receita, ingrediente por ingrediente.
+
+### Quanto custa repor o que faltou
+
+A lista de compras não sugere o déficit puro. Ela soma uma folga — 500 g, ou 2 unidades para
+item contado — porque comprar exatamente o que falta te deixa **em cima** do mínimo, e o item
+volta a ficar crítico no dia seguinte:
+
+```ts
+const faltam = critico
+  ? Math.max(0, minimo - atual) + (mp.unidade === "UNIDADE" ? 2 : 500)
+  : 0;
+```
+
+A estimativa de compra é a soma de `faltam × preço/kg` de cada item crítico. É o número que o
+dono quer antes de ir ao mercado, e ele não existe em nenhuma tela de "estoque" comum.
 
 ---
 
