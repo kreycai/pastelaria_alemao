@@ -181,4 +181,4 @@ resolver problema que não tem.
 
 TypeScript · Turborepo · pnpm workspaces · NestJS 11 · Next.js 15 · React Native / Expo 54 ·
 Prisma · PostgreSQL (Neon) · TailwindCSS v4 · Swagger/OpenAPI · Expo Push Notifications ·
-deploy do web na Vercel
+deploy: web na **Vercel**, API no **Railway**, banco no **Neon**

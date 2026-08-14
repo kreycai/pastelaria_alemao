@@ -16,6 +16,10 @@ Expo Go (Android/iOS) ───────────────────�
 A tela /cozinha se atualiza por polling (5s no web, 8s no mobile).
 ```
 
+Em produção: **web na Vercel**, **API no Railway**, **banco no Neon**. O web aponta pra API
+por `NEXT_PUBLIC_API_URL`, e o mobile por `EXPO_PUBLIC_API_URL` / pela constante em
+`apps/mobile/src/lib/api.ts`.
+
 ## Workspaces
 
 | Package              | Caminho           | Descrição                              |
@@ -44,16 +48,23 @@ pnpm db:studio                                # Prisma Studio
 ```
 
 ## Variáveis de Ambiente
-Arquivo: `apps/api/.env` (copiar de `.env.example`)
+
+Dois arquivos, com os mesmos valores: **`.env` na raiz** (Prisma, migrações e seed leem
+daqui, via `dotenv-cli`) e **`apps/api/.env`** (o NestJS lê o dele). Ambos partem de
+`.env.example`.
 
 ```
 DATABASE_URL=postgresql://...?sslmode=require   # Pooled via PgBouncer — runtime
 DIRECT_URL=postgresql://...?sslmode=require     # Conexão direta — migrações Prisma
-JWT_SECRET=<qualquer string>
-ADMIN_USERNAME=admin                            # Padrão: "admin"
-ADMIN_PASSWORD=pastelaria123                    # Padrão: "pastelaria123"
-AUTH_SECRET=<secret>                            # JWT do web (padrão: "pastelaria-alemao-secret-jwt-2024")
+JWT_SECRET=<gerar>
+ADMIN_USERNAME=<definir>
+ADMIN_PASSWORD=<definir>
+AUTH_SECRET=<gerar: openssl rand -hex 32>       # assina o JWT de sessão do web
 ```
+
+**Nenhuma dessas tem valor padrão no código, de propósito.** Sem `AUTH_SECRET` a rota de
+login falha; sem `ADMIN_USERNAME`/`ADMIN_PASSWORD` ninguém entra. Segredo embutido como
+fallback é segredo público — ele vaza junto com o repositório.
 
 **Mobile:** `API_URL` está hardcoded em `apps/mobile/src/lib/api.ts` — alterar para o IP da máquina na rede local (ex: `http://192.168.x.x:3001`).
 
