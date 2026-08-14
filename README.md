@@ -119,9 +119,18 @@ cp .env.example apps/api/.env       # preencher DATABASE_URL e DIRECT_URL
 
 pnpm db:generate                    # gera o Prisma Client
 pnpm db:migrate                     # cria as tabelas
+pnpm --filter @pastelaria/db run db:seed   # dados de demonstração
 
 pnpm dev                            # web :3000 + api :3001
 ```
+
+O seed popula **um mês de operação**: 22 matérias-primas com receita ligada a cada um dos 16
+pastéis, mais de 100 pedidos espalhados pelas semanas (sexta e sábado vendem mais, domingo
+menos), oito pedidos na fila da cozinha agora mesmo, fiados em aberto — um deles vencido — e
+três ingredientes abaixo do mínimo, pro painel ter o que alertar. A semente do gerador é fixa,
+então rodar duas vezes dá o mesmo resultado.
+
+> ⚠️ O seed **apaga** os dados de negócio antes de popular. É para banco de desenvolvimento.
 
 Individualmente:
 
