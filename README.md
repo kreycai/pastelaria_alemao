@@ -115,14 +115,19 @@ Precisa de Node ≥ 20, pnpm ≥ 9 e um PostgreSQL (o projeto usa [Neon](https:/
 
 ```bash
 pnpm install
-cp .env.example apps/api/.env       # preencher DATABASE_URL e DIRECT_URL
+
+cp .env.example .env                # preencher DATABASE_URL e DIRECT_URL
+cp .env .env.api && mv .env.api apps/api/.env    # a API lê o dela
 
 pnpm db:generate                    # gera o Prisma Client
 pnpm db:migrate                     # cria as tabelas
-pnpm --filter @pastelaria/db run db:seed   # dados de demonstração
+pnpm db:seed                        # dados de demonstração
 
 pnpm dev                            # web :3000 + api :3001
 ```
+
+> São dois arquivos porque o alvo é diferente: as ferramentas de banco (Prisma, seed) leem o
+> `.env` da **raiz**, e o NestJS lê o de `apps/api/`. Os valores são os mesmos.
 
 O seed popula **um mês de operação**: 22 matérias-primas com receita ligada a cada um dos 16
 pastéis, mais de 100 pedidos espalhados pelas semanas (sexta e sábado vendem mais, domingo

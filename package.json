@@ -11,7 +11,8 @@
     "clean": "turbo run clean",
     "db:generate": "turbo run db:generate",
     "db:migrate": "pnpm --filter @pastelaria/db run db:migrate",
-    "db:studio": "pnpm --filter @pastelaria/db exec prisma studio",
+    "db:seed": "pnpm --filter @pastelaria/db run db:seed",
+    "db:studio": "pnpm --filter @pastelaria/db run db:studio",
     "mobile": "pnpm --filter @pastelaria/mobile dev",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\" --ignore-path .gitignore"
   },
